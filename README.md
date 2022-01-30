@@ -1,1 +1,2 @@
-# MECH2200_Elevator_Program
+# MECH2200 Elevator Program
+
