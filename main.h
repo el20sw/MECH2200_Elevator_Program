@@ -71,19 +71,25 @@ const unsigned char DiagnosticMessage[] = "\r\n\r\n **** Elevator Diagnostics Me
 const unsigned char DiagnosticMessage1[] = "1: Test stepper motor\r\n";
 const unsigned char DiagnosticMessage2[] = "2: Test Switch\r\n";
 const unsigned char DiagnosticMessage3[] = "3: Direction Calibration\r\n";
-const unsigned char DiagnosticMessage4[] = "4: Return to Main Menu\r\n";
+const unsigned char DiagnosticMessage4[] = "4: Test Doors\r\n";
+const unsigned char DiagnosticMessage5[] = "5: Return to Main Menu\r\n";
 
 //Run Time Menu Options
 const unsigned char RunTimeMessage[] = "\r\n\r\n **** Run Time Menu ****\r\n";
 const unsigned char RunTimeMessage1[] = "1: Upwards\r\n";
 const unsigned char RunTimeMessage2[] = "2: Downwards\r\n";
-const unsigned char RunTimeMessage3[] = "-: To Emergency Stop Press the Button\r\n";
-const unsigned char ReturnMessage[] = "3: Return to Main Menu\r\n";
-const unsigned char DoorsOpening[] = "Doors Open\r\n";
-const unsigned char DoorsClosing[] = "Doors Closed\r\n";
+const unsigned char RunTimeMessage3[] = "3: Doors Open\r\n";
+const unsigned char RunTimeMessage4[] = "4: Doors Closed\r\n";
+const unsigned char RunTimeMessage5[] = "-: To Emergency Stop Press the Button\r\n";
+const unsigned char ReturnMessage[] = "5: Return to Main Menu\r\n";
 const unsigned char GoingUpMessage[] = "Going Up\r\n";
 const unsigned char GoingDownMessage[] = "Going Down\r\n";
+const unsigned char DoorsOpening[] = "Doors Open\r\n";
+const unsigned char DoorsClosing[] = "Doors Closed\r\n";
 const unsigned char StopMessage[] = "STOPPED\r\n";
+
+//Test Doors Message
+const unsigned char DoorTestMessage1[] = "\r\nDoor Operational\r\n";
 
 //stepper diagnostic options list
 const unsigned char StepperOptionMessage[] = "\r\n\r\n **** STEPPER MOTOR TEST OPION LIST ****\r\n";
@@ -198,5 +204,8 @@ void DisplayCalibrateDirectionMenuList(void);
 void DisplayCalibrateSettingList(void);
 void ClockwiseCalibration(void);
 void AntiClockwiseCalibration(void);
+void OpenDoors(void);
+void CloseDoors(void);
+void TestDoors(void);
 
 #endif

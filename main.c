@@ -82,6 +82,7 @@ void DisplayDiagnosticMenuList(void) {
     SendMessage(DiagnosticMessage2);
     SendMessage(DiagnosticMessage3);
     SendMessage(DiagnosticMessage4);
+    SendMessage(DiagnosticMessage5);
     SendMessage(OptionSelectMessage);
 
 }
@@ -93,7 +94,9 @@ void DisplayRunTimeMenuList(void) {
     SendMessage(CRLF);
     SendMessage(RunTimeMessage1);
     SendMessage(RunTimeMessage2);
+    SendMessage(RunTimeMessage5);
     SendMessage(RunTimeMessage3);
+    SendMessage(RunTimeMessage4);
     SendMessage(ReturnMessage);
     SendMessage(OptionSelectMessage);
 
@@ -138,6 +141,11 @@ void DiagnosticMenu(void) {
                     break;
                     
                 case 4:
+                    //Test Doors
+                    TestDoors();
+                    break;
+                    
+                case 5:
                     //Return to Main Menu
                     Status = 1;
                     break;
@@ -185,8 +193,18 @@ void RunTimeMenu(void) {
                     SendMessage(GoingDownMessage);
                     Downwards();
                     break;
-                            
+                    
                 case 3:
+                    //Doors Open
+                    OpenDoors();
+                    break;
+                    
+                case 4:
+                    //Doors Close
+                    CloseDoors();
+                    break;
+                            
+                case 5:
                     Status = 1;
                     break;
                     
@@ -547,12 +565,25 @@ void Upwards(void) {
     
     while(Status == 1) {
         
-        if (GPIO_1_READ_PORT == 0 || GPIO_2_READ_PORT == 0) {
+        if (GPIO_1_READ_PORT == 0) {
+            
+            StepperStop();
+            for (unsigned int loop = 0; loop < 100; loop++) {
+                for (unsigned int delay = 0; delay < 5000; delay++) {
+                    //delay loop
+                }
+            }
+            OpenDoors();
+            Status = 0;
+            
+        } else if (GPIO_2_READ_PORT == 0) {
             
             StepperStop();
             Status = 0;
+            
         } else {
             
+            CloseDoors();
             GoingUp();
         }
     }
@@ -564,12 +595,25 @@ void Downwards(void) {
     
     while(Status == 1) {
         
-        if (GPIO_1_READ_PORT == 0 || GPIO_2_READ_PORT == 0) {
+        if (GPIO_1_READ_PORT == 0) {
+            
+            StepperStop();
+            for (unsigned int loop = 0; loop < 100; loop++) {
+                for (unsigned int delay = 0; delay < 5000; delay++) {
+                    //delay loop
+                }
+            }
+            OpenDoors();
+            Status = 0;
+            
+        } else if (GPIO_2_READ_PORT == 0) {
             
             StepperStop();
             Status = 0;
+            
         } else {
             
+            CloseDoors();
             GoingDown();
         }
     }
@@ -763,4 +807,63 @@ void AntiClockwiseCalibration(void) {
     
     StepperStop();
     
+}
+
+void OpenDoors(void) {
+    
+    unsigned int Count = 0;
+    
+    while (Count < 100) {
+        GLOBAL_PWM3_PulseTime = 1900;
+        GLOBAL_PWM4_PulseTime = 1000;
+        Count++;
+    }
+}
+
+void CloseDoors(void) {
+    
+    unsigned int Count = 0;
+    
+    while (Count < 100) {
+        GLOBAL_PWM3_PulseTime = 1000;
+        GLOBAL_PWM4_PulseTime = 1900;
+        Count++;
+    }
+}
+
+void TestDoors(void) {
+    
+    CloseDoors();
+    for (unsigned int loop = 0; loop < 150; loop++) {
+        for (unsigned int delay = 0; delay < 5000; delay++) {
+            //delay loop
+        }
+    }
+    OpenDoors();
+    for (unsigned int loop = 0; loop < 150; loop++) {
+        for (unsigned int delay = 0; delay < 5000; delay++) {
+            //delay loop
+        }
+    }
+    CloseDoors();
+    for (unsigned int loop = 0; loop < 150; loop++) {
+        for (unsigned int delay = 0; delay < 5000; delay++) {
+            //delay loop
+        }
+    }
+    OpenDoors();
+    for (unsigned int loop = 0; loop < 150; loop++) {
+        for (unsigned int delay = 0; delay < 5000; delay++) {
+            //delay loop
+        }
+    }
+    CloseDoors();
+    for (unsigned int loop = 0; loop < 100; loop++) {
+        for (unsigned int delay = 0; delay < 2500; delay++) {
+            //delay loop
+        }
+    }
+    
+    SendMessage(CRLF);
+    SendMessage(DoorTestMessage1);
 }

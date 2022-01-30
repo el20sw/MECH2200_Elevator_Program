@@ -7,3 +7,8 @@ main.c line 278 - changed value minimum to 700 and changed relevant message in m
 (29/01/2022)
 
 External Emergency Stop Button @ GPIO2 - need to bring push button to fabrication
+PWM3 Default changed to 1000
+
+(30/01/2022)
+
+PWM4 Default changed to 1900
