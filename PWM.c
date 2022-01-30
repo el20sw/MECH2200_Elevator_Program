@@ -38,7 +38,7 @@ void    InitialisePWM_16Bit(void)
     //1000 = 1ms
     //2000 = 2ms
     //1500 = 1.5ms
-    GLOBAL_PWM3_PulseTime = 1500;
+    GLOBAL_PWM3_PulseTime = 1000;
     //load PWM5 pulse time value
     PWM5DC = GLOBAL_PWM3_PulseTime;
     
@@ -73,7 +73,7 @@ void    InitialisePWM_16Bit(void)
     //1000 = 1ms
     //2000 = 2ms
     //1500 = 1.5ms
-    GLOBAL_PWM4_PulseTime = 1500;
+    GLOBAL_PWM4_PulseTime = 1900;
     //load PWM6 pulse time value
     PWM6DC = GLOBAL_PWM4_PulseTime;
     
