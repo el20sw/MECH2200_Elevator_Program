@@ -72,16 +72,20 @@ const unsigned char DiagnosticMessage1[] = "1: Test stepper motor\r\n";
 const unsigned char DiagnosticMessage2[] = "2: Test Switch\r\n";
 const unsigned char DiagnosticMessage3[] = "3: Direction Calibration\r\n";
 const unsigned char DiagnosticMessage4[] = "4: Test Doors\r\n";
-const unsigned char DiagnosticMessage5[] = "5: Return to Main Menu\r\n";
+const unsigned char DiagnosticMessage5[] = "5: Set Ground Floor\r\n";
+const unsigned char DiagnosticMessage6[] = "6: Return to Main Menu\r\n";
 
 //Run Time Menu Options
 const unsigned char RunTimeMessage[] = "\r\n\r\n **** Run Time Menu ****\r\n";
-const unsigned char RunTimeMessage1[] = "1: Upwards\r\n";
-const unsigned char RunTimeMessage2[] = "2: Downwards\r\n";
-const unsigned char RunTimeMessage3[] = "3: Doors Open\r\n";
-const unsigned char RunTimeMessage4[] = "4: Doors Closed\r\n";
-const unsigned char RunTimeMessage5[] = "-: To Emergency Stop Press the Button\r\n";
-const unsigned char ReturnMessage[] = "5: Return to Main Menu\r\n";
+const unsigned char RunTimeMessage1[] = "1: Floor 0\r\n";
+const unsigned char RunTimeMessage2[] = "2: Floor 1\r\n";
+const unsigned char RunTimeMessage3[] = "3: Floor 2\r\n";
+const unsigned char RunTimeMessage4[] = "4: Upwards\r\n";
+const unsigned char RunTimeMessage5[] = "5: Downwards\r\n";
+const unsigned char RunTimeMessage6[] = "6: Doors Open\r\n";
+const unsigned char RunTimeMessage7[] = "7: Doors Closed\r\n";
+const unsigned char RunTimeMessage8[] = "-: To Emergency Stop Press the Button\r\n";
+const unsigned char ReturnMessage[] = "8: Return to Main Menu\r\n";
 const unsigned char GoingUpMessage[] = "Going Up\r\n";
 const unsigned char GoingDownMessage[] = "Going Down\r\n";
 const unsigned char DoorsOpening[] = "Doors Open\r\n";
@@ -139,6 +143,14 @@ const unsigned char CalibrationMessage1[] = "3: Return to diagnostic menu\r\n";
 const unsigned char SetUpwardsMessage[] = "1. Set as Upwards\r\n";
 const unsigned char SetDownwardsMessage[] = "2. Set as Downwards\r\n";
 
+//Location Calibration Messages
+const unsigned char LocationCalibrationMessage[] = "\r\n\r\n **** Ground Floor Calibration Menu ****\r\n";
+const unsigned char LocationCalibrationMessage1[] = "\r\n 1: Set current location as ground floor";
+const unsigned char LocationCalibrationMessage2[] = "\r\n 2: Go Up";
+const unsigned char LocationCalibrationMessage3[] = "\r\n 3: Go Down";
+const unsigned char LocationCalibrationMessage4[] = "\r\n 4: Return to diagnostic menu";
+const unsigned char LocationCalibrationMessage5[] = "\r\nCurrent Location Set as Ground Floor\r\n";
+
 //7 segment LED display test messages
 const unsigned char LED_DisplayOptionMessage[] = "\r\n\r\n **** LED 7 SEGMENT DISPLAY MODULE TEST OPTION LIST ****\r\n\r\n";
 const unsigned char LED_DisplayOptionMessage1[] = " 1: Clear Display\r\n";
@@ -162,6 +174,18 @@ const unsigned char LED_DisplayDCA_Message[] = "\r\n Enter DCA value (0 to 63): 
 const unsigned char LED_DisplayIntensityMessage[] = "\r\n Enter Display Intensity Value (0 to 100): ";
 const unsigned char LED_DisplaySegmentControlMessage[] = "\r\n Enter decimal control value (0 to 127): ";
 
+//Floor Messages
+const unsigned char Floor0_Message1[] = "\r\nAlready at Floor 0";
+const unsigned char Floor1_Message1[] = "\r\nAlready at Floor 1";
+const unsigned char Floor2_Message1[] = "\r\nAlready at Floor 2";
+const unsigned char Floor0_Message2[] = "\r\nGoing to Floor 0";
+const unsigned char Floor1_Message2[] = "\r\nGoing to Floor 1";
+const unsigned char Floor2_Message2[] = "\r\nGoing to Floor 2";
+const unsigned char Floor0_Message3[] = "\r\nArrived at Floor 0";
+const unsigned char Floor1_Message3[] = "\r\nArrived at Floor 1";
+const unsigned char Floor2_Message3[] = "\r\nArrived at Floor 2";
+
+
 //global variables
 volatile unsigned int GLOBAL_TimerEventCounter = 0;
 volatile unsigned int GLOBAL_TimerEventFlag = 0;
@@ -179,6 +203,8 @@ volatile unsigned int GLOBAL_DirectionStatus;
 
 volatile unsigned int GLOBAL_UpwardsSetting = 0b0;
 volatile unsigned int GLOBAL_DownwardsSetting = 0b1;
+
+volatile unsigned int current_location;
 
 //declare functions
 void DisplaySystemOptionsList(void);
@@ -204,8 +230,13 @@ void DisplayCalibrateDirectionMenuList(void);
 void DisplayCalibrateSettingList(void);
 void ClockwiseCalibration(void);
 void AntiClockwiseCalibration(void);
+void Display_Location_Calibration_List(void);
+void Calibrate_Current_Location(void);
 void OpenDoors(void);
 void CloseDoors(void);
 void TestDoors(void);
+void gotoFloor0(void);
+void gotoFloor1(void);
+void gotoFloor2(void);
 
 #endif

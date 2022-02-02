@@ -83,6 +83,7 @@ void DisplayDiagnosticMenuList(void) {
     SendMessage(DiagnosticMessage3);
     SendMessage(DiagnosticMessage4);
     SendMessage(DiagnosticMessage5);
+    SendMessage(DiagnosticMessage6);
     SendMessage(OptionSelectMessage);
 
 }
@@ -94,9 +95,12 @@ void DisplayRunTimeMenuList(void) {
     SendMessage(CRLF);
     SendMessage(RunTimeMessage1);
     SendMessage(RunTimeMessage2);
-    SendMessage(RunTimeMessage5);
     SendMessage(RunTimeMessage3);
     SendMessage(RunTimeMessage4);
+    SendMessage(RunTimeMessage5);
+    SendMessage(RunTimeMessage6);
+    SendMessage(RunTimeMessage7);
+    SendMessage(RunTimeMessage8);
     SendMessage(ReturnMessage);
     SendMessage(OptionSelectMessage);
 
@@ -146,6 +150,11 @@ void DiagnosticMenu(void) {
                     break;
                     
                 case 5:
+                    //Set Ground Floor
+                    Calibrate_Current_Location();
+                    break;
+                    
+                case 6:
                     //Return to Main Menu
                     Status = 1;
                     break;
@@ -180,31 +189,47 @@ void RunTimeMenu(void) {
             Value = StringToInteger(GLOBAL_RxString);
             //switch statement to perform requested action
             switch(Value) {
+                
                 case 1:
+                    //Floor 0
+                    gotoFloor0();
+                    break;
+                    
+                case 2:
+                    //Floor 1
+                    gotoFloor1();
+                    break;
+                    
+                case 3:
+                    //Floor 2
+                    gotoFloor2();
+                    break;
+                
+                case 4:
                     //Upwards
                     SendMessage(CRLF);
                     SendMessage(GoingUpMessage);
                     Upwards();
                     break;
                     
-                case 2:
+                case 5:
                     //Downwards
                     SendMessage(CRLF);
                     SendMessage(GoingDownMessage);
                     Downwards();
                     break;
                     
-                case 3:
+                case 6:
                     //Doors Open
                     OpenDoors();
                     break;
                     
-                case 4:
+                case 7:
                     //Doors Close
                     CloseDoors();
                     break;
                             
-                case 5:
+                case 8:
                     Status = 1;
                     break;
                     
@@ -809,6 +834,107 @@ void AntiClockwiseCalibration(void) {
     
 }
 
+void Display_Location_Calibration_List(void) {
+    
+    SendMessage(LocationCalibrationMessage);
+    SendMessage(CRLF);
+    SendMessage(LocationCalibrationMessage1);
+    SendMessage(LocationCalibrationMessage2);
+    SendMessage(LocationCalibrationMessage3);
+    SendMessage(LocationCalibrationMessage4);
+    SendMessage(OptionSelectMessage);
+
+}
+
+void Calibrate_Current_Location(void) {
+    
+    unsigned int Status = 0;
+    unsigned int Status_1 = 1;
+    unsigned int StringStatus;
+    unsigned int Value;
+    unsigned int MotorStopStatus;
+    
+    while (Status == 0) {
+        
+        Display_Location_Calibration_List();
+        
+        //test for any string entry
+        StringStatus = GetString(1,GLOBAL_RxString);
+        if(StringStatus != STRING_OK)
+        {
+            //string error
+            DisplayStringError(StringStatus);
+        }
+        else
+        {
+            //string ok
+            //convert string to binary value
+            Value = StringToInteger(GLOBAL_RxString);
+            //test for required action
+            switch(Value)
+            {
+                case 1:
+                    //Set location as ground floor
+                    current_location = 0;
+                    SendMessage(CRLF);
+                    SendMessage(LocationCalibrationMessage5);
+                    break;
+                    
+                case 2:
+                    //Go Up
+                    while(Status_1 == 1) {
+
+                        if (GPIO_1_READ_PORT == 0) {
+
+                            StepperStop();
+                            Status_1 = 0;
+
+                        } else if (GPIO_2_READ_PORT == 0) {
+
+                            StepperStop();
+                            Status_1 = 0;
+
+                        } else {
+
+                            GoingUp();
+                        }
+                    }
+                    break;
+                    
+                case 3:
+                    //Go Down
+                    while(Status_1 == 1) {
+
+                        if (GPIO_1_READ_PORT == 0) {
+
+                            StepperStop();
+                            Status_1 = 0;
+
+                        } else if (GPIO_2_READ_PORT == 0) {
+
+                            StepperStop();
+                            Status_1 = 0;
+
+                        } else {
+
+                            GoingDown();
+                        }
+                    }
+                    break;
+                    
+                case 4:
+                    Status = 1;
+                    break;
+                    
+                default:
+                    SendMessage(InvalidNumber);
+                    
+            }
+        
+        }
+    }
+}
+
 void OpenDoors(void) {
     
     unsigned int Count = 0;
@@ -866,4 +992,250 @@ void TestDoors(void) {
     
     SendMessage(CRLF);
     SendMessage(DoorTestMessage1);
+}
+
+void gotoFloor0(void) {
+    
+    unsigned int Status = 0;
+    
+    switch(current_location) {
+        
+        case 0:
+            //Floor 0 to Floor 0
+            SendMessage(CRLF);
+            SendMessage(Floor0_Message1);
+            break;
+            
+        case 1:
+            //Floor 1 to Floor 0
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 1 Time
+                    
+                    //Now at Ground Floor
+                    current_location = 0;
+                    
+                    StepperStop();
+                    for (unsigned int loop = 0; loop < 100; loop++) {
+                        for (unsigned int delay = 0; delay < 5000; delay++) {
+                            //delay loop
+                        }
+                    }
+                    SendMessage(CRLF);
+                    SendMessage(Floor0_Message3);
+                    OpenDoors();
+                    //set current location as Floor 0
+                    
+                    Status = 1;
+                } else {
+                    CloseDoors();
+                    GoingDown();
+                    SendMessage(CRLF);
+                    SendMessage(Floor0_Message2);
+                }
+            }
+            break;
+            
+        case 2:
+            //Floor 2 to Floor 0
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 2 Time
+                    
+                    if (current_location == 2) {current_location = 1;}
+                            
+                    if(current_location == 1) {
+                        current_location = 0;
+                        StepperStop();
+                        for (unsigned int loop = 0; loop < 100; loop++) {
+                            for (unsigned int delay = 0; delay < 5000; delay++) {
+                                //delay loop
+                            }
+                        }
+                        SendMessage(CRLF);
+                        SendMessage(Floor0_Message3);
+                        OpenDoors();
+                        //set current location as Floor 0
+                        current_location = 0;
+                        Status = 1;
+                    }
+                    
+                } else {
+                    CloseDoors();
+                    GoingDown();
+                    SendMessage(CRLF);
+                    SendMessage(Floor0_Message2);
+                }
+            }
+            break;
+    }
+}
+
+void gotoFloor1(void) {
+    
+    unsigned int Status = 0;
+    
+    switch(current_location) {
+        
+        case 0:
+            //Floor 0 to Floor 1
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 1 Time
+                    
+                    //Now at First Floor
+                    current_location = 1;
+                    
+                    StepperStop();
+                    for (unsigned int loop = 0; loop < 100; loop++) {
+                        for (unsigned int delay = 0; delay < 5000; delay++) {
+                            //delay loop
+                        }
+                    }
+                    SendMessage(CRLF);
+                    OpenDoors();
+                    SendMessage(Floor1_Message3);
+                    Status = 1;
+                } else {
+                    CloseDoors();
+                    GoingUp();
+                    SendMessage(CRLF);
+                    SendMessage(Floor1_Message2);
+                }
+            }
+            break;
+            
+        case 1:
+            //Floor 1 to Floor 1
+            SendMessage(CRLF);
+            SendMessage(Floor1_Message1);
+            break;
+            
+        case 2:
+            //Floor 2 to Floor 1
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 1 Time
+                    
+                    //Now at First Floor
+                    current_location = 1;
+                    
+                    StepperStop();
+                    for (unsigned int loop = 0; loop < 100; loop++) {
+                        for (unsigned int delay = 0; delay < 5000; delay++) {
+                            //delay loop
+                        }
+                    }
+                    SendMessage(CRLF);
+                    SendMessage(Floor1_Message3);
+                    OpenDoors();
+                    Status = 1;
+                } else {
+                    CloseDoors();
+                    GoingDown();
+                    SendMessage(CRLF);
+                    SendMessage(Floor1_Message2);
+                }
+            }
+            break;
+    }
+}
+
+void gotoFloor2(void) {
+    
+    unsigned int Status = 0;
+    
+    switch(current_location) {
+        
+        case 0:
+            //Floor 0 to Floor 2
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 2 Time
+                    
+                    if (current_location == 0) {current_location = 1;}
+                            
+                    if(current_location == 1) {
+                        current_location = 2;
+                        StepperStop();
+                        for (unsigned int loop = 0; loop < 100; loop++) {
+                            for (unsigned int delay = 0; delay < 5000; delay++) {
+                                //delay loop
+                            }
+                        }
+                        SendMessage(CRLF);
+                        SendMessage(Floor2_Message3);
+                        OpenDoors();
+                        Status = 1;
+                    }
+                    
+                } else {
+                    CloseDoors();
+                    GoingUp();
+                    SendMessage(CRLF);
+                    SendMessage(Floor2_Message2);
+                }
+            }
+            break;
+            
+        case 1:
+            //Floor 1 to Floor 2
+            while(Status == 0) {
+                if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
+                    StepperStop();
+                    SendMessage(CRLF);
+                    SendMessage(StopMessage);
+                    Status = 1;
+                } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 1 Time
+                    
+                    //Now at Ground Floor
+                    current_location = 2;
+                    
+                    StepperStop();
+                    for (unsigned int loop = 0; loop < 100; loop++) {
+                        for (unsigned int delay = 0; delay < 5000; delay++) {
+                            //delay loop
+                        }
+                    }
+                    SendMessage(CRLF);
+                    SendMessage(Floor2_Message3);
+                    OpenDoors();
+                    //set current location as Floor 0
+                    
+                    Status = 1;
+                } else {
+                    CloseDoors();
+                    GoingUp();
+                    SendMessage(CRLF);
+                    SendMessage(Floor2_Message2);
+                }
+            }
+            break;
+            
+        case 2:
+            //Floor 2 to Floor 2
+            SendMessage(CRLF);
+            SendMessage(Floor2_Message1);
+            break;
+    }
 }
