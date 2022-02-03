@@ -1160,10 +1160,12 @@ void gotoFloor1(void) {
 void gotoFloor2(void) {
     
     unsigned int Status = 0;
+    unsigned int i = 0;
     
     switch(current_location) {
         
         case 0:
+            
             //Floor 0 to Floor 2
             while(Status == 0) {
                 if(GPIO_2_READ_PORT == 0) {             //Emergency Stop
@@ -1173,9 +1175,9 @@ void gotoFloor2(void) {
                     Status = 1;
                 } else if (GPIO_1_READ_PORT == 0) {     //Hit Elevator Switch 2 Time
                     
-                    if (current_location == 0) {current_location = 1;}
-                            
-                    if(current_location == 1) {
+                    i++;
+                    
+                    if (i == 2) {
                         current_location = 2;
                         StepperStop();
                         for (unsigned int loop = 0; loop < 100; loop++) {
@@ -1186,7 +1188,12 @@ void gotoFloor2(void) {
                         SendMessage(CRLF);
                         SendMessage(Floor2_Message3);
                         OpenDoors();
+
                         Status = 1;
+                    } else if (i == 1) {
+                        current_location = 1;
+                        StepperStop();
+                        GoingUp();
                     }
                     
                 } else {
